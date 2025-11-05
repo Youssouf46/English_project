@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Profile</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Student Profile</h1> </header>
+
+    <main class="profile-page">
+
+        <img id="profile-photo" src="" alt="Profile picture" class="profile-pic-large">
+        
+        <div class="profile-details">
+            <h2 id="profile-name">Loading...</h2>
+            <p id="profile-specialty" class="subtitle"></p>
+            
+            <p id="profile-age" class="subtitle-age"></p> 
+            
+            <p id="profile-nationality" class="subtitle-nationality"></p> 
+
+            <h3>About Me / Evaluation</h3>
+            <p id="profile-bio"></p>
+
+            <h3>Key Skills</h3>
+            <ul id="profile-skills">
+                </ul>
+        </div>
+
+    </main>
+
+    <a href="index.html" class="back-link">Back to Team Page</a>
+
+
+    <script src="data.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const studentKey = urlParams.get('student'); 
+            const student = studentsData[studentKey];
+
+            if (student) {
+                // Remplissage standard
+                document.title = `Profile of ${student.name}`; 
+                document.getElementById('profile-photo').src = student.photo;
+                document.getElementById('profile-photo').alt = `Photo of ${student.name}`;
+                document.getElementById('profile-name').textContent = student.name;
+                document.getElementById('profile-specialty').textContent = `Specialty: ${student.specialty}`;
+
+                // GESTION DE L'ÂGE / DATE DE NAISSANCE (Mis à jour)
+                const ageEl = document.getElementById('profile-age');
+                let ageText = '';
+                if (student.Age) {
+                    ageText += `Age: ${student.Age} years old`;
+                }
+                if (student.dob) {
+                    // Ajoute la date de naissance si elle existe
+                    ageText += ` (Born: ${student.dob})`;
+                }
+                if (ageText) {
+                    ageEl.textContent = ageText;
+                }
+
+                // GESTION NATIONALITÉ / LIEU DE NAISSANCE (Mis à jour)
+                const nationalityEl = document.getElementById('profile-nationality');
+                let nationText = '';
+                if (student.nationality) {
+                    nationText += `Nationality: ${student.nationality}`;
+                }
+                if (student.placeOfBirth) {
+                    // Ajoute le lieu de naissance s'il existe
+                    nationText += ` (Place of Birth: ${student.placeOfBirth})`;
+                }
+                if (nationText) {
+                    nationalityEl.textContent = nationText;
+                }
+                
+                // GESTION DE LA BIO (Votre évaluation)
+                const bioEl = document.getElementById('profile-bio');
+                if (student.bio) {
+                    // Utilise .innerHTML pour que les <br> et <strong> fonctionnent
+                    bioEl.innerHTML = student.bio.replace(/\n/g, '<br>');
+                } else {
+                    bioEl.textContent = "Biographical information not provided.";
+                }
+
+                // GESTION DES COMPÉTENCES
+                const skillsList = document.getElementById('profile-skills');
+                skillsList.innerHTML = ''; 
+                
+                if (student.skills && student.skills.length > 0) {
+                    student.skills.forEach(skill => {
+                        const li = document.createElement('li');
+                        li.textContent = skill;
+                        skillsList.appendChild(li);
+                    });
+                } else {
+                    const li = document.createElement('li');
+                    li.textContent = "Skills not specified.";
+                    skillsList.appendChild(li);
+                }
+
+            } else {
+                document.querySelector('.profile-page').innerHTML = 
+                    "<h2>Error: Student not found.</h2>";
+            }
+        });
+    </script>
+
+</body>
+</html>
