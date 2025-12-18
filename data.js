@@ -10,7 +10,7 @@ const studentsData = {
         photo: "images/Youssouf.png",
         
         // --- NOUVEAUX CHAMPS BASÉS SUR LA PHOTO ---
-        Age: '27',
+        Age: '25',
         dob: "31/12/1997",
         nationality: "Mauritanian",
         placeOfBirth: "Nouakchott, Mauritania", 
@@ -157,10 +157,10 @@ const studentsData = {
         name: "Ambroise",
         specialty: "DE",
         photo: "images/Ambroise.png",
-        nationality: "French",
+        nationality: "Togolese",
         Age: '25',
         dob: "18/09/2000",
-        placeOfBirth: "Paris, France",
+        placeOfBirth: "Lomé, Togo",
         bio: `
         **Coding Strengths**
         I excel at building data pipelines with Apache Spark and working with large-scale distributed systems. My strength lies in optimizing ETL processes and designing efficient data architectures. I'm particularly skilled at handling streaming data with Kafka and implementing real-time analytics.
