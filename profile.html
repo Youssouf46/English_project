@@ -9,31 +9,60 @@
 <body>
 
     <header>
-        <h1>Student Profile</h1> </header>
+        <h1>Student Profile</h1>
+    </header>
+
+    <div class="profile-hero">
+        <div class="profile-hero-content">
+            <img id="profile-photo" src="" alt="Profile picture" class="profile-pic-large">
+            <div class="profile-header-info">
+                <h2 id="profile-name">Loading...</h2>
+                <p id="profile-specialty" class="specialty-badge"></p>
+            </div>
+        </div>
+    </div>
 
     <main class="profile-page">
-
-        <img id="profile-photo" src="" alt="Profile picture" class="profile-pic-large">
         
-        <div class="profile-details">
-            <h2 id="profile-name">Loading...</h2>
-            <p id="profile-specialty" class="subtitle"></p>
+        <div class="profile-info-cards">
+            <div class="info-card">
+                <div class="info-card-icon">🎂</div>
+                <div class="info-card-content">
+                    <h4>Age & Birthday</h4>
+                    <p id="profile-age"></p>
+                </div>
+            </div>
             
-            <p id="profile-age" class="subtitle-age"></p> 
-            
-            <p id="profile-nationality" class="subtitle-nationality"></p> 
+            <div class="info-card">
+                <div class="info-card-icon">🌍</div>
+                <div class="info-card-content">
+                    <h4>Nationality & Origin</h4>
+                    <p id="profile-nationality"></p>
+                </div>
+            </div>
+        </div>
 
-            <h3>About Me / Evaluation</h3>
-            <p id="profile-bio"></p>
+        <div class="profile-section">
+            <div class="section-header">
+                <span class="section-icon">📝</span>
+                <h3>About Me / Evaluation</h3>
+            </div>
+            <div class="bio-content" id="profile-bio"></div>
+        </div>
 
-            <h3>Key Skills</h3>
-            <ul id="profile-skills">
-                </ul>
+        <div class="profile-section">
+            <div class="section-header">
+                <span class="section-icon">💻</span>
+                <h3>Key Skills</h3>
+            </div>
+            <div class="skills-grid" id="profile-skills"></div>
         </div>
 
     </main>
 
-    <a href="index.html" class="back-link">Back to Team Page</a>
+    <a href="index.html" class="back-link">
+        <span>←</span> Back to Team Page
+    </a>
 
 
     <script src="data.js"></script>
@@ -50,59 +79,64 @@
                 document.getElementById('profile-photo').src = student.photo;
                 document.getElementById('profile-photo').alt = `Photo of ${student.name}`;
                 document.getElementById('profile-name').textContent = student.name;
-                document.getElementById('profile-specialty').textContent = `Specialty: ${student.specialty}`;
+                
+                // Affichage du badge de spécialité
+                const specialtyEl = document.getElementById('profile-specialty');
+                const badgeClass = student.specialty === 'DE' ? 'badge-de' : 'badge-dfs';
+                const specialtyText = student.specialty === 'DE' ? 'Data Engineering' : 'Fullstack';
+                specialtyEl.innerHTML = `<span class="badge ${badgeClass}">${specialtyText}</span>`;
 
-                // GESTION DE L'ÂGE / DATE DE NAISSANCE (Mis à jour)
+                // GESTION DE L'ÂGE / DATE DE NAISSANCE
                 const ageEl = document.getElementById('profile-age');
                 let ageText = '';
                 if (student.Age) {
-                    ageText += `Age: ${student.Age} years old`;
+                    ageText += `${student.Age} years old`;
                 }
                 if (student.dob) {
-                    // Ajoute la date de naissance si elle existe
-                    ageText += ` (Born: ${student.dob})`;
+                    ageText += student.Age ? ` • Born: ${student.dob}` : `Born: ${student.dob}`;
                 }
                 if (ageText) {
                     ageEl.textContent = ageText;
+                } else {
+                    ageEl.textContent = 'Not specified';
                 }
 
-                // GESTION NATIONALITÉ / LIEU DE NAISSANCE (Mis à jour)
+                // GESTION NATIONALITÉ / LIEU DE NAISSANCE
                 const nationalityEl = document.getElementById('profile-nationality');
                 let nationText = '';
                 if (student.nationality) {
-                    nationText += `Nationality: ${student.nationality}`;
+                    nationText += student.nationality;
                 }
                 if (student.placeOfBirth) {
-                    // Ajoute le lieu de naissance s'il existe
-                    nationText += ` (Place of Birth: ${student.placeOfBirth})`;
+                    nationText += student.nationality ? ` • ${student.placeOfBirth}` : student.placeOfBirth;
                 }
                 if (nationText) {
                     nationalityEl.textContent = nationText;
+                } else {
+                    nationalityEl.textContent = 'Not specified';
                 }
                 
-                // GESTION DE LA BIO (Votre évaluation)
+                // GESTION DE LA BIO
                 const bioEl = document.getElementById('profile-bio');
                 if (student.bio) {
-                    // Utilise .innerHTML pour que les <br> et <strong> fonctionnent
                     bioEl.innerHTML = student.bio.replace(/\n/g, '<br>');
                 } else {
                     bioEl.textContent = "Biographical information not provided.";
                 }
 
-                // GESTION DES COMPÉTENCES
+                // GESTION DES COMPÉTENCES (avec grid design)
                 const skillsList = document.getElementById('profile-skills');
                 skillsList.innerHTML = ''; 
                 
                 if (student.skills && student.skills.length > 0) {
                     student.skills.forEach(skill => {
-                        const li = document.createElement('li');
-                        li.textContent = skill;
-                        skillsList.appendChild(li);
+                        const skillBadge = document.createElement('span');
+                        skillBadge.className = 'skill-badge';
+                        skillBadge.textContent = skill;
+                        skillsList.appendChild(skillBadge);
                     });
                 } else {
-                    const li = document.createElement('li');
-                    li.textContent = "Skills not specified.";
-                    skillsList.appendChild(li);
+                    skillsList.innerHTML = '<p>Skills not specified.</p>';
                 }
 
             } else {
