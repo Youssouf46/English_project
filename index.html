@@ -19,8 +19,25 @@
             <a href="add-student.html" class="add-student-btn">➕ Add New Student</a>
         </div>
     </div>
+
+    <!-- Search and Filter Section -->
+    <div class="search-section">
+        <div class="search-container">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Search by skills (e.g., Django, React, Python...)">
+                <button id="clearSearch" class="clear-btn" style="display: none;">✗</button>
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All Students (<span id="countAll">16</span>)</button>
+                <button class="filter-btn" data-filter="DE">Data Engineering (<span id="countDE">0</span>)</button>
+                <button class="filter-btn" data-filter="DFS">Fullstack (<span id="countDFS">0</span>)</button>
+            </div>
+        </div>
+        <div id="searchResults" class="search-results"></div>
+    </div>
     
-    <main class="squad-grid">
+    <main class="squad-grid" id="studentGrid">
 
         <a href="profile.html?student=Youssouf" class="student-card">
             <img src="images/Youssouf.png" alt="Photo of Youssouf Maham bowba">
@@ -250,6 +267,148 @@
         if (savedData) {
             Object.assign(studentsData, JSON.parse(savedData));
         }
+
+        // Search and Filter functionality
+        const searchInput = document.getElementById('searchInput');
+        const clearBtn = document.getElementById('clearSearch');
+        const searchResults = document.getElementById('searchResults');
+        const studentGrid = document.getElementById('studentGrid');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        
+        let currentFilter = 'all';
+        let currentSearch = '';
+
+        // Count students by specialty
+        function updateCounts() {
+            let allCount = 0;
+            let deCount = 0;
+            let dfsCount = 0;
+
+            const cards = studentGrid.querySelectorAll('.student-card');
+            cards.forEach(card => {
+                if (card.style.display !== 'none') {
+                    allCount++;
+                    if (card.dataset.specialty === 'DE') deCount++;
+                    if (card.dataset.specialty === 'DFS' || card.dataset.specialty === 'Fullstack') dfsCount++;
+                }
+            });
+
+            document.getElementById('countAll').textContent = allCount;
+            document.getElementById('countDE').textContent = deCount;
+            document.getElementById('countDFS').textContent = dfsCount;
+        }
+
+        // Add data attributes to existing cards
+        function initializeCards() {
+            const cards = studentGrid.querySelectorAll('.student-card');
+            cards.forEach(card => {
+                const studentName = card.querySelector('h3')?.textContent.trim();
+                // Find student in data
+                for (let key in studentsData) {
+                    if (studentsData[key].name === studentName) {
+                        card.dataset.specialty = studentsData[key].specialty;
+                        card.dataset.skills = (studentsData[key].skills || []).join(',').toLowerCase();
+                        card.dataset.name = studentName.toLowerCase();
+                        break;
+                    }
+                }
+            });
+            updateCounts();
+        }
+
+        // Filter students
+        function filterStudents() {
+            const cards = studentGrid.querySelectorAll('.student-card');
+            let visibleCount = 0;
+            let matchedSkills = new Set();
+
+            cards.forEach(card => {
+                const specialty = card.dataset.specialty;
+                const skills = card.dataset.skills || '';
+                const name = card.dataset.name || '';
+                
+                let matchesFilter = currentFilter === 'all' || 
+                                   specialty === currentFilter || 
+                                   (currentFilter === 'DFS' && specialty === 'Fullstack');
+                
+                let matchesSearch = true;
+                if (currentSearch) {
+                    const searchLower = currentSearch.toLowerCase();
+                    matchesSearch = skills.includes(searchLower) || name.includes(searchLower);
+                    
+                    // Collect matched skills for display
+                    if (matchesSearch && skills) {
+                        const studentSkills = skills.split(',');
+                        studentSkills.forEach(skill => {
+                            if (skill.includes(searchLower)) {
+                                matchedSkills.add(skill.trim());
+                            }
+                        });
+                    }
+                }
+
+                if (matchesFilter && matchesSearch) {
+                    card.style.display = '';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            updateCounts();
+
+            // Show search results
+            if (currentSearch && visibleCount > 0) {
+                const skillsArray = Array.from(matchedSkills);
+                searchResults.innerHTML = `
+                    <p>
+                        <strong>${visibleCount}</strong> student${visibleCount !== 1 ? 's' : ''} found with skill${skillsArray.length !== 1 ? 's' : ''}: 
+                        ${skillsArray.map(s => `<span class="matched-skill">${s}</span>`).join(', ')}
+                    </p>
+                `;
+                searchResults.style.display = 'block';
+            } else if (currentSearch && visibleCount === 0) {
+                searchResults.innerHTML = `
+                    <p class="no-results">
+                        ❌ No students found with skill "<strong>${currentSearch}</strong>"
+                    </p>
+                `;
+                searchResults.style.display = 'block';
+            } else {
+                searchResults.style.display = 'none';
+            }
+        }
+
+        // Search input handler
+        searchInput.addEventListener('input', (e) => {
+            currentSearch = e.target.value.trim();
+            clearBtn.style.display = currentSearch ? 'block' : 'none';
+            filterStudents();
+        });
+
+        // Clear search
+        clearBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            currentSearch = '';
+            clearBtn.style.display = 'none';
+            filterStudents();
+            searchInput.focus();
+        });
+
+        // Filter buttons
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.filter;
+                filterStudents();
+            });
+        });
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            initializeCards();
+        });
     </script>
 
 </body>

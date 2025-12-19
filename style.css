@@ -90,6 +90,183 @@ header h1 {
 }
 /* FIN NOUVEAU STYLE POUR LA SECTION HERO */
 
+/* SEARCH AND FILTER SECTION */
+.search-section {
+    max-width: 1400px;
+    margin: -30px auto 40px;
+    padding: 0 20px;
+    position: relative;
+    z-index: 5;
+}
+
+.search-container {
+    background: white;
+    border-radius: 15px;
+    padding: 25px 30px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border: 2px solid #e0e0e0;
+    border-radius: 50px;
+    padding: 12px 20px;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+}
+
+.search-box:focus-within {
+    border-color: #667eea;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.search-icon {
+    font-size: 1.3em;
+    color: #667eea;
+}
+
+#searchInput {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 1em;
+    padding: 8px;
+    outline: none;
+    color: #333;
+}
+
+#searchInput::placeholder {
+    color: #999;
+    font-style: italic;
+}
+
+.clear-btn {
+    background: #ff6b6b;
+    color: white;
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 0.9em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.clear-btn:hover {
+    background: #ee5a6f;
+    transform: rotate(90deg) scale(1.1);
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.filter-btn {
+    padding: 12px 25px;
+    border: 2px solid #e0e0e0;
+    background: white;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 0.95em;
+    font-weight: 600;
+    color: #666;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-btn span {
+    background: #e0e0e0;
+    color: #666;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.85em;
+    min-width: 20px;
+    text-align: center;
+}
+
+.filter-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.filter-btn.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: #667eea;
+}
+
+.filter-btn.active span {
+    background: rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+.filter-btn[data-filter="DE"].active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: #667eea;
+}
+
+.filter-btn[data-filter="DFS"].active {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border-color: #f5576c;
+}
+
+.search-results {
+    background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+    padding: 15px 20px;
+    border-radius: 12px;
+    margin-top: 20px;
+    display: none;
+    animation: slideDown 0.3s ease;
+}
+
+.search-results p {
+    margin: 0;
+    color: #1e3c72;
+    font-size: 0.95em;
+    line-height: 1.6;
+}
+
+.matched-skill {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.9em;
+    font-weight: 600;
+    margin: 2px;
+}
+
+.no-results {
+    color: #dc3545 !important;
+    font-weight: 600;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* END SEARCH AND FILTER SECTION */
+
 
 footer {
     text-align: center;
@@ -894,6 +1071,37 @@ footer {
     .profile-skill-badge {
         font-size: 0.85em;
         padding: 8px 14px;
+    }
+
+    /* Search section mobile */
+    .search-section {
+        margin: -20px auto 30px;
+    }
+
+    .search-container {
+        padding: 20px 15px;
+    }
+
+    .search-box {
+        padding: 10px 15px;
+    }
+
+    #searchInput {
+        font-size: 0.9em;
+    }
+
+    .filter-buttons {
+        gap: 8px;
+    }
+
+    .filter-btn {
+        padding: 10px 18px;
+        font-size: 0.85em;
+    }
+
+    .search-results {
+        padding: 12px 15px;
+        font-size: 0.9em;
     }
 }
 
