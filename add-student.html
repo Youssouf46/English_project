@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Student - M2 Info</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Add New Student</h1>
+    </header>
+
+    <div class="add-student-hero">
+        <div class="hero-content">
+            <h2>Create a New Student Profile</h2>
+            <p>Fill in the details below to add a new member to our team</p>
+        </div>
+    </div>
+
+    <main class="add-student-container">
+        <form id="addStudentForm" class="student-form">
+            
+            <div class="form-section">
+                <h3>📋 Basic Information</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="studentName">Full Name *</label>
+                        <input type="text" id="studentName" name="studentName" required placeholder="e.g., John Doe">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="studentKey">Unique ID (for URL) *</label>
+                        <input type="text" id="studentKey" name="studentKey" required placeholder="e.g., john.doe">
+                        <small>This will be used in the profile URL. Use lowercase letters and dots/hyphens only.</small>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="studentSpecialty">Specialty *</label>
+                        <select id="studentSpecialty" name="studentSpecialty" required>
+                            <option value="">Select a specialty</option>
+                            <option value="DE">Data Engineering</option>
+                            <option value="DFS">Fullstack</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="studentPhotoFile">Upload Photo</label>
+                        <input type="file" id="studentPhotoFile" name="studentPhotoFile" accept="image/*">
+                        <small>Upload a photo (JPG, PNG, GIF) - Optional</small>
+                        <div id="photoPreview" class="photo-preview" style="display: none;">
+                            <img id="previewImage" src="" alt="Photo preview">
+                            <button type="button" id="removePhoto" class="remove-photo-btn">✗ Remove</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="studentPhoto">Or enter Photo URL</label>
+                        <input type="text" id="studentPhoto" name="studentPhoto" placeholder="images/student.png">
+                        <small>Alternative: enter a direct URL to the photo</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>👤 Personal Details</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="studentAge">Age *</label>
+                        <input type="number" id="studentAge" name="studentAge" min="18" max="100" required placeholder="25">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="studentDOB">Date of Birth</label>
+                        <input type="text" id="studentDOB" name="studentDOB" placeholder="DD/MM/YYYY">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="studentNationality">Nationality *</label>
+                        <input type="text" id="studentNationality" name="studentNationality" required placeholder="e.g., French">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="studentPlaceOfBirth">Place of Birth</label>
+                        <input type="text" id="studentPlaceOfBirth" name="studentPlaceOfBirth" placeholder="e.g., Paris, France">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>💭 About & Skills</h3>
+                <div class="form-group">
+                    <label for="studentBio">Biography / About Me</label>
+                    <textarea id="studentBio" name="studentBio" rows="8" placeholder="Tell us about the student's background, achievements, strengths, weaknesses, and future plans..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="studentSkills">Skills (comma separated)</label>
+                    <input type="text" id="studentSkills" name="studentSkills" placeholder="Python, JavaScript, React, Node.js, MongoDB">
+                    <small>Enter skills separated by commas</small>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">
+                    <span>✓</span> Add Student
+                </button>
+                <a href="index.html" class="btn-cancel">
+                    <span>✗</span> Cancel
+                </a>
+            </div>
+        </form>
+    </main>
+
+    <script src="data.js"></script>
+    <script>
+        const form = document.getElementById('addStudentForm');
+        const photoFileInput = document.getElementById('studentPhotoFile');
+        const photoPreview = document.getElementById('photoPreview');
+        const previewImage = document.getElementById('previewImage');
+        const removePhotoBtn = document.getElementById('removePhoto');
+        const photoUrlInput = document.getElementById('studentPhoto');
+        
+        let uploadedPhotoData = null;
+
+        // Handle photo file upload
+        photoFileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            
+            if (file) {
+                // Check file size (max 2MB)
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('⚠️ Photo size must be less than 2MB');
+                    photoFileInput.value = '';
+                    return;
+                }
+
+                // Read and preview the image
+                const reader = new FileReader();
+                
+                reader.onload = function(event) {
+                    uploadedPhotoData = event.target.result;
+                    previewImage.src = uploadedPhotoData;
+                    photoPreview.style.display = 'block';
+                    photoUrlInput.value = ''; // Clear URL input if photo is uploaded
+                };
+                
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Remove uploaded photo
+        removePhotoBtn.addEventListener('click', function() {
+            photoFileInput.value = '';
+            uploadedPhotoData = null;
+            photoPreview.style.display = 'none';
+            previewImage.src = '';
+        });
+
+        // Clear uploaded photo if URL is entered
+        photoUrlInput.addEventListener('input', function() {
+            if (this.value.trim()) {
+                photoFileInput.value = '';
+                uploadedPhotoData = null;
+                photoPreview.style.display = 'none';
+                previewImage.src = '';
+            }
+        });
+
+        form.onsubmit = function(e) {
+            e.preventDefault();
+
+            const studentKey = document.getElementById('studentKey').value.trim();
+            const studentName = document.getElementById('studentName').value.trim();
+            const specialty = document.getElementById('studentSpecialty').value;
+            const age = document.getElementById('studentAge').value;
+            const dob = document.getElementById('studentDOB').value.trim();
+            const nationality = document.getElementById('studentNationality').value.trim();
+            const placeOfBirth = document.getElementById('studentPlaceOfBirth').value.trim();
+            
+            // Use uploaded photo (base64) or URL, or default image
+            let photo;
+            if (uploadedPhotoData) {
+                photo = uploadedPhotoData; // Base64 encoded image
+            } else {
+                photo = document.getElementById('studentPhoto').value.trim() || 'images/default.png';
+            }
+            
+            const bio = document.getElementById('studentBio').value.trim();
+            const skillsInput = document.getElementById('studentSkills').value.trim();
+            const skills = skillsInput ? skillsInput.split(',').map(s => s.trim()) : [];
+
+            // Check if student key already exists
+            if (studentsData[studentKey]) {
+                alert('⚠️ A student with this ID already exists. Please choose a different ID.');
+                document.getElementById('studentKey').focus();
+                return;
+            }
+
+            // Add to studentsData
+            studentsData[studentKey] = {
+                name: studentName,
+                specialty: specialty,
+                photo: photo,
+                nationality: nationality,
+                Age: age,
+                dob: dob || '',
+                placeOfBirth: placeOfBirth || '',
+                bio: bio || 'No biography provided yet.',
+                skills: skills
+            };
+
+            // Store in localStorage to persist the data
+            localStorage.setItem('studentsData', JSON.stringify(studentsData));
+
+            // Success message and redirect
+            alert('✓ Student added successfully! Redirecting to the team page...');
+            window.location.href = 'index.html';
+        }
+    </script>
+
+</body>
+</html>

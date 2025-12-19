@@ -16,6 +16,7 @@
         <div class="hero-content">
             <h2>Discover the Talents of M2 Info</h2>
             <p>Meet our students, their specialties, and their projects.</p>
+            <a href="add-student.html" class="add-student-btn">➕ Add New Student</a>
         </div>
     </div>
     
@@ -241,6 +242,15 @@
     <footer>
         <p>M2 Info Project - Made by Youssouf Maham bowba</p>
     </footer>
+
+    <script src="data.js"></script>
+    <script>
+        // Load students from localStorage if available
+        const savedData = localStorage.getItem('studentsData');
+        if (savedData) {
+            Object.assign(studentsData, JSON.parse(savedData));
+        }
+    </script>
 
 </body>
 </html>

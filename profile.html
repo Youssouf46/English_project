@@ -6,64 +6,21 @@
     <title>Student Profile</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="profile-body">
 
     <header>
-        <h1>Student Profile</h1>
+        <h1>Profile Pages Showcase</h1>
     </header>
 
-    <div class="profile-hero">
-        <div class="profile-hero-content">
-            <img id="profile-photo" src="" alt="Profile picture" class="profile-pic-large">
-            <div class="profile-header-info">
-                <h2 id="profile-name">Loading...</h2>
-                <p id="profile-specialty" class="specialty-badge"></p>
-            </div>
+    <main class="profile-showcase-container">
+        <div id="profile-card" class="profile-card">
+            <!-- Content will be dynamically generated -->
         </div>
-    </div>
-
-    <main class="profile-page">
-        
-        <div class="profile-info-cards">
-            <div class="info-card">
-                <div class="info-card-icon">🎂</div>
-                <div class="info-card-content">
-                    <h4>Age & Birthday</h4>
-                    <p id="profile-age"></p>
-                </div>
-            </div>
-            
-            <div class="info-card">
-                <div class="info-card-icon">🌍</div>
-                <div class="info-card-content">
-                    <h4>Nationality & Origin</h4>
-                    <p id="profile-nationality"></p>
-                </div>
-            </div>
-        </div>
-
-        <div class="profile-section">
-            <div class="section-header">
-                <span class="section-icon">📝</span>
-                <h3>About Me / Evaluation</h3>
-            </div>
-            <div class="bio-content" id="profile-bio"></div>
-        </div>
-
-        <div class="profile-section">
-            <div class="section-header">
-                <span class="section-icon">💻</span>
-                <h3>Key Skills</h3>
-            </div>
-            <div class="skills-grid" id="profile-skills"></div>
-        </div>
-
     </main>
 
     <a href="index.html" class="back-link">
         <span>←</span> Back to Team Page
     </a>
-
 
     <script src="data.js"></script>
     <script>
@@ -74,76 +31,144 @@
             const student = studentsData[studentKey];
 
             if (student) {
-                // Remplissage standard
-                document.title = `Profile of ${student.name}`; 
-                document.getElementById('profile-photo').src = student.photo;
-                document.getElementById('profile-photo').alt = `Photo of ${student.name}`;
-                document.getElementById('profile-name').textContent = student.name;
+                document.title = `Profile of ${student.name}`;
                 
-                // Affichage du badge de spécialité
-                const specialtyEl = document.getElementById('profile-specialty');
-                const badgeClass = student.specialty === 'DE' ? 'badge-de' : 'badge-dfs';
-                const specialtyText = student.specialty === 'DE' ? 'Data Engineering' : 'Fullstack';
-                specialtyEl.innerHTML = `<span class="badge ${badgeClass}">${specialtyText}</span>`;
-
-                // GESTION DE L'ÂGE / DATE DE NAISSANCE
-                const ageEl = document.getElementById('profile-age');
-                let ageText = '';
-                if (student.Age) {
-                    ageText += `${student.Age} years old`;
-                }
-                if (student.dob) {
-                    ageText += student.Age ? ` • Born: ${student.dob}` : `Born: ${student.dob}`;
-                }
-                if (ageText) {
-                    ageEl.textContent = ageText;
-                } else {
-                    ageEl.textContent = 'Not specified';
-                }
-
-                // GESTION NATIONALITÉ / LIEU DE NAISSANCE
-                const nationalityEl = document.getElementById('profile-nationality');
-                let nationText = '';
-                if (student.nationality) {
-                    nationText += student.nationality;
-                }
-                if (student.placeOfBirth) {
-                    nationText += student.nationality ? ` • ${student.placeOfBirth}` : student.placeOfBirth;
-                }
-                if (nationText) {
-                    nationalityEl.textContent = nationText;
-                } else {
-                    nationalityEl.textContent = 'Not specified';
-                }
+                const specialtyClass = student.specialty === 'DE' || student.specialty === 'Data Engineering' ? 'profile-de' : 'profile-dfs';
+                const specialtyText = student.specialty === 'DE' || student.specialty === 'Data Engineering' ? 'Data Engineering' : 'Fullstack';
+                const specialtyBadgeClass = student.specialty === 'DE' || student.specialty === 'Data Engineering' ? 'badge-de' : 'badge-dfs';
                 
-                // GESTION DE LA BIO
-                const bioEl = document.getElementById('profile-bio');
+                // Parse bio to extract sections
+                let codingStrengths = '';
+                let codingWeaknesses = '';
+                let biggestAchievement = '';
+                let futurePlans = '';
+                
                 if (student.bio) {
-                    bioEl.innerHTML = student.bio.replace(/\n/g, '<br>');
-                } else {
-                    bioEl.textContent = "Biographical information not provided.";
+                    const bioText = student.bio;
+                    
+                    // Extract Coding Strengths
+                    const strengthsMatch = bioText.match(/\*\*Coding Strengths\*\*([\s\S]*?)(?=\*\*|$)/);
+                    if (strengthsMatch) {
+                        codingStrengths = strengthsMatch[1].trim();
+                    }
+                    
+                    // Extract Coding Weaknesses
+                    const weaknessesMatch = bioText.match(/\*\*Coding Weaknesses\*\*([\s\S]*?)(?=\*\*|$)/);
+                    if (weaknessesMatch) {
+                        codingWeaknesses = weaknessesMatch[1].trim();
+                    }
+                    
+                    // Extract Biggest Achievement
+                    const achievementMatch = bioText.match(/\*\*Biggest Achievement.*?\*\*([\s\S]*?)(?=\*\*|$)/);
+                    if (achievementMatch) {
+                        biggestAchievement = achievementMatch[1].trim();
+                    }
+                    
+                    // Extract Future Plans
+                    const plansMatch = bioText.match(/\*\*Future Plans\*\*([\s\S]*?)$/);
+                    if (plansMatch) {
+                        futurePlans = plansMatch[1].trim();
+                    }
                 }
-
-                // GESTION DES COMPÉTENCES (avec grid design)
-                const skillsList = document.getElementById('profile-skills');
-                skillsList.innerHTML = ''; 
                 
+                // Get age and nationality
+                const age = student.Age ? `${student.Age} years old` : 'N/A';
+                const nationality = student.nationality || 'N/A';
+                
+                // Build skills HTML
+                let skillsHTML = '';
                 if (student.skills && student.skills.length > 0) {
-                    student.skills.forEach(skill => {
-                        const skillBadge = document.createElement('span');
-                        skillBadge.className = 'skill-badge';
-                        skillBadge.textContent = skill;
-                        skillsList.appendChild(skillBadge);
-                    });
-                } else {
-                    skillsList.innerHTML = '<p>Skills not specified.</p>';
+                    skillsHTML = student.skills.map(skill => 
+                        `<span class="profile-skill-badge">${skill}</span>`
+                    ).join('');
                 }
-
+                
+                // Create the profile card HTML
+                const profileHTML = `
+                    <div class="profile-card-gradient ${specialtyClass}">
+                        <div class="profile-card-header">
+                            <img src="${student.photo}" alt="${student.name}" class="profile-card-photo">
+                            <div class="profile-card-info">
+                                <h2 class="profile-card-name">${student.name}</h2>
+                                <span class="profile-specialty-badge ${specialtyBadgeClass}">${specialtyText}</span>
+                                <div class="profile-meta">
+                                    <span class="meta-item">🎂 ${age}</span>
+                                    <span class="meta-item">🌍 ${nationality}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="profile-card-body">
+                            <section class="profile-section-card">
+                                <h3 class="section-title">
+                                    <span class="section-icon">👤</span> About Me
+                                </h3>
+                                <div class="about-columns">
+                                    <div class="about-column">
+                                        <h4 class="subsection-title">Coding Strengths</h4>
+                                        <ul class="strength-list">
+                                            ${codingStrengths ? parseBulletPoints(codingStrengths, 'strength') : '<li class="strength-item">Big Data ecosystem</li><li class="strength-item">Python, Scala, Spark</li>'}
+                                        </ul>
+                                    </div>
+                                    <div class="about-column">
+                                        <h4 class="subsection-title">Coding Weaknesses</h4>
+                                        <ul class="weakness-list">
+                                            ${codingWeaknesses ? parseBulletPoints(codingWeaknesses, 'weakness') : '<li class="weakness-item">Front-end design</li><li class="weakness-item">UI/UX</li>'}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </section>
+                            
+                            <section class="profile-section-card">
+                                <h3 class="section-title">
+                                    <span class="section-icon">🏆</span> Biggest Achievement
+                                </h3>
+                                <p class="section-text">${biggestAchievement || 'SYSTEO DIGITAL web application - Platform showcasing data engineering skills.'}</p>
+                            </section>
+                            
+                            <section class="profile-section-card">
+                                <h3 class="section-title">
+                                    <span class="section-icon">🚀</span> Future Plans
+                                </h3>
+                                <p class="section-text">${futurePlans || 'Seeking internships to gain industry experience and become a Senior Data Architect.'}</p>
+                            </section>
+                            
+                            <section class="profile-section-card">
+                                <h3 class="section-title">
+                                    <span class="section-icon">🛠️</span> Technical Skills
+                                </h3>
+                                <div class="profile-skills-container">
+                                    ${skillsHTML || '<span class="profile-skill-badge">Python</span><span class="profile-skill-badge">JavaScript</span>'}
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('profile-card').innerHTML = profileHTML;
+                
             } else {
-                document.querySelector('.profile-page').innerHTML = 
-                    "<h2>Error: Student not found.</h2>";
+                document.getElementById('profile-card').innerHTML = 
+                    '<div class="error-message"><h2>Error: Student not found.</h2></div>';
             }
         });
+        
+        // Helper function to parse bullet points from text
+        function parseBulletPoints(text, type) {
+            const lines = text.split('\n').filter(line => line.trim());
+            const listClass = type === 'strength' ? 'strength-list' : 'weakness-list';
+            const itemClass = type === 'strength' ? 'strength-item' : 'weakness-item';
+            
+            let html = '';
+            for (let line of lines) {
+                const cleaned = line.trim().replace(/^[-•*]\s*/, '');
+                if (cleaned) {
+                    html += `<li class="${itemClass}">${cleaned}</li>`;
+                }
+            }
+            
+            return html || `<li class="${itemClass}">Information not specified</li>`;
+        }
     </script>
 
 </body>
